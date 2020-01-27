@@ -24,7 +24,29 @@ function preload() {
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
+  setupPoseNet();
+  createSliderUI();
+  createButtonUI();
+}
 
+function draw () {
+  image(video, 0, 0, 500, 500);
+
+  drawKeypoints();
+  // drawSkeleton();
+  setTrackVolumes();
+}
+
+function modelReady() {
+  select('#status').html('Model Loaded');
+}
+
+function initSongVolumes () {
+  song1.setVolume(song1Volume);
+  song2.setVolume(song2Volume);
+}
+
+function setupPoseNet () {
   video = createCapture(VIDEO);
   video.size(500, 500);
 
@@ -37,15 +59,17 @@ function setup() {
   });
   // Hide the video element, and just show the canvas
   video.hide();
-  
-  song1.setVolume(song1Volume);
-  song2.setVolume(song2Volume);
+}
 
+
+function createSliderUI () {
   // visual crossfade
   slider = createSlider(-100, 100, 0);
   slider.position(10, 10);
   slider.style('width', '80px');
+}
 
+function createButtonUI () {
   // ui for play and stop buttons
   song1PlayButton = createButton("Play Song 1");
   song1PlayButton.position(10, 49);
@@ -62,15 +86,12 @@ function setup() {
   song2StopButton = createButton("Stop Song 2");
   song2StopButton.position(100, 79);
   song2StopButton.mousePressed(() => stopSong(2));
-
 }
 
-function draw () {
-  image(video, 0, 0, 500, 500);
 
-  drawKeypoints();
-  // drawSkeleton();
 
+
+function setTrackVolumes () {
   let val = slider.value();
   if (val < 0) {
     song1Volume = map(val, -100, 0, 0.5, 0.25);
@@ -86,11 +107,6 @@ function draw () {
   song1.setVolume(song1Volume);
   song2.setVolume(song2Volume);
 }
-
-function modelReady() {
-  select('#status').html('Model Loaded');
-}
-
 
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints()  {
