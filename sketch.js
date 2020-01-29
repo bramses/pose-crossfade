@@ -18,33 +18,29 @@ let song2PlayButtton;
 let song2StopButton;
 
 function preload() {
-  song1 = loadSound('sounds/no-exit.mp3');
-  song2 = loadSound('sounds/departure.mp3');
+  song1 = loadSound('sounds/Burufunk vs. Carbon Community - Community Funk (Deadmau5 Remix).mp3');
+  song2 = loadSound('sounds/J. Scott G. vs. Imprintz & Kloe - Battlefunk Galactica.mp3');
 }
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
   setupPoseNet();
-  createSliderUI();
+  // createSliderUI();
   createButtonUI();
+  initSongVolumes();
 }
 
 function draw () {
   image(video, 0, 0, 500, 500);
-
-  drawKeypoints();
   // drawSkeleton();
-  setTrackVolumes();
+  drawKeypoints();
+  // setTrackVolumes();
 }
 
 function modelReady() {
-  select('#status').html('Model Loaded');
+  //select('#status').html('Model Loaded');
 }
 
-function initSongVolumes () {
-  song1.setVolume(song1Volume);
-  song2.setVolume(song2Volume);
-}
 
 function setupPoseNet () {
   video = createCapture(VIDEO);
@@ -61,52 +57,13 @@ function setupPoseNet () {
   video.hide();
 }
 
-
-function createSliderUI () {
-  // visual crossfade
-  slider = createSlider(-100, 100, 0);
-  slider.position(10, 10);
-  slider.style('width', '80px');
-}
-
-function createButtonUI () {
-  // ui for play and stop buttons
-  song1PlayButton = createButton("Play Song 1");
-  song1PlayButton.position(10, 49);
-  song1PlayButton.mousePressed(() => playSong(1));
-
-  song1StopButton = createButton("Stop Song 1");
-  song1StopButton.position(100, 49);
-  song1StopButton.mousePressed(() => stopSong(1));
-
-  song2PlayButton = createButton("Play Song 2");
-  song2PlayButton.position(10, 79);
-  song2PlayButton.mousePressed(() => playSong(2));
-
-  song2StopButton = createButton("Stop Song 2");
-  song2StopButton.position(100, 79);
-  song2StopButton.mousePressed(() => stopSong(2));
-}
-
-
-
-
-function setTrackVolumes () {
-  let val = slider.value();
-  if (val < 0) {
-    song1Volume = map(val, -100, 0, 0.5, 0.25);
-    song2Volume = map(val, -100, 0, 0, .25);
-  } else if (val == 0) {
-    song1Volume = .25;
-    song2Volume = .25;
-  } else {
-    song1Volume = map(val, 0, 100, 0.25, 0);
-    song2Volume = map(val, 0, 100, 0.25, 0.5);
-  }
-
-  song1.setVolume(song1Volume);
-  song2.setVolume(song2Volume);
-}
+/*
+score: 0.00750491488724947
+part: "leftHip"
+position:
+x: 391.88223066385723
+y: 505.0605760912681
+*/
 
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints()  {
@@ -117,12 +74,12 @@ function drawKeypoints()  {
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
-      console.log(keypoint);
       // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.score > 0.2) {
-        fill(255, 0, 0);
-        noStroke();
-        ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
+      if (keypoint.part == "leftWrist" && keypoint.position.y < 250 && keypoint.score > 0.7) {
+        setTrackVolumes(keypoint.position.y, 0)
+      }
+      else if (keypoint.part == "rightWrist" && keypoint.position.y < 250 && keypoint.score > 0.6) {
+        setTrackVolumes(keypoint.position.y, 1)
       }
     }
   }
@@ -143,6 +100,65 @@ function drawSkeleton() {
   }
 }
 
+
+function initSongVolumes () {
+  song1.setVolume(song1Volume);
+  song2.setVolume(song2Volume);
+}
+
+function createSliderUI () {
+  // visual crossfade
+  slider = createSlider(-100, 100, 0);
+  slider.position(10, 10);
+  slider.style('width', '80px');
+}
+
+function createButtonUI () {
+  // ui for play and stop buttons
+  song1PlayButton = createButton("Play Song 1");
+  song1PlayButton.position(10, 549);
+  song1PlayButton.mousePressed(() => playSong(1));
+
+  song1StopButton = createButton("Stop Song 1");
+  song1StopButton.position(100, 549);
+  song1StopButton.mousePressed(() => stopSong(1));
+
+  song2PlayButton = createButton("Play Song 2");
+  song2PlayButton.position(10, 579);
+  song2PlayButton.mousePressed(() => playSong(2));
+
+  song2StopButton = createButton("Stop Song 2");
+  song2StopButton.position(100, 579);
+  song2StopButton.mousePressed(() => stopSong(2));
+}
+
+
+function setTrackVolumes (yVal, hand) {
+  let val = 0
+  if (yVal != null && hand == 0) {
+    val = map(yVal, 0, 250, 0, 100)
+  }
+  else if (yVal != null && hand == 1) {
+    val = map(yVal, 0, 250, 0, -100)
+  }
+  else {
+    val = slider.value();
+  }
+  console.log(val, hand)
+  if (val < 0) {
+    song1Volume = map(val, -100, 0, 0.5, 0.25);
+    song2Volume = map(val, -100, 0, 0, .25);
+  } else if (val == 0) {
+    song1Volume = .25;
+    song2Volume = .25;
+  } else {
+    song1Volume = map(val, 0, 100, 0.25, 0);
+    song2Volume = map(val, 0, 100, 0.25, 0.5);
+  }
+
+  song1.setVolume(song1Volume);
+  song2.setVolume(song2Volume);
+}
 
 function playSong (trackNo) {
   if (trackNo == 1 && !song1.isPlaying()) song1.play();
