@@ -128,6 +128,15 @@ function drawKeypoints()  {
   }
 }
 
+
+/*
+{score: 0.0035247844643890858, part: "leftWrist", position: {…}}
+score: 0.0035247844643890858
+part: "leftWrist"
+position: {x: 329.5289563853838, y: 453.6976993200142}
+*/
+
+
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
