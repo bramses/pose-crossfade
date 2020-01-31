@@ -18,8 +18,10 @@ let song2PlayButtton;
 let song2StopButton;
 
 function preload() {
-  song1 = loadSound('sounds/Burufunk vs. Carbon Community - Community Funk (Deadmau5 Remix).mp3');
-  song2 = loadSound('sounds/J. Scott G. vs. Imprintz & Kloe - Battlefunk Galactica.mp3');
+  // song1 = loadSound('sounds/Burufunk vs. Carbon Community - Community Funk (Deadmau5 Remix).mp3');
+  // song2 = loadSound('sounds/J. Scott G. vs. Imprintz & Kloe - Battlefunk Galactica.mp3');
+  song1 = loadSound('sounds/departure.mp3');
+  song2 = loadSound('sounds/no-exit.mp3');
 }
 
 function setup() {
@@ -75,12 +77,15 @@ function drawKeypoints()  {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.part == "leftWrist" && keypoint.position.y < 250 && keypoint.score > 0.7) {
-        setTrackVolumes(keypoint.position.y, 0)
+      if (keypoint.part == "leftWrist" && keypoint.score > 0.2) {
+        // setTrackVolumes(keypoint.position.y, 0)
+        setTrackVolumesCrossfade(keypoint.position.x);
+        stroke(255, 0, 0);
+        ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
       }
-      else if (keypoint.part == "rightWrist" && keypoint.position.y < 250 && keypoint.score > 0.6) {
-        setTrackVolumes(keypoint.position.y, 1)
-      }
+      // else if (keypoint.part == "rightWrist" && keypoint.position.y < 250 && keypoint.score > 0.6) {
+      //   // setTrackVolumes(keypoint.position.y, 1)
+      // }
     }
   }
 }
@@ -160,6 +165,24 @@ function setTrackVolumes (yVal, hand) {
   song2.setVolume(song2Volume);
 }
 
+
+function setTrackVolumesCrossfade (xVal) {
+  let val = map(xVal, 0, 500, -100, 100)
+  
+  if (val < 0) {
+    song1Volume = map(val, -100, 0, 0.5, 0.25);
+    song2Volume = map(val, -100, 0, 0, .25);
+  } else if (val == 0) {
+    song1Volume = .25;
+    song2Volume = .25;
+  } else {
+    song1Volume = map(val, 0, 100, 0.25, 0);
+    song2Volume = map(val, 0, 100, 0.25, 0.5);
+  }
+
+  song1.setVolume(song1Volume);
+  song2.setVolume(song2Volume);
+}
 
 /*
 {score: 0.0035247844643890858, part: "leftWrist", position: {…}}
