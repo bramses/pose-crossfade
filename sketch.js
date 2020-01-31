@@ -144,7 +144,7 @@ function setTrackVolumes (yVal, hand) {
   else {
     val = slider.value();
   }
-  console.log(val, hand)
+
   if (val < 0) {
     song1Volume = map(val, -100, 0, 0.5, 0.25);
     song2Volume = map(val, -100, 0, 0, .25);
