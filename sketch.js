@@ -18,10 +18,10 @@ let song2PlayButtton;
 let song2StopButton;
 
 function preload() {
-  // song1 = loadSound('sounds/Burufunk vs. Carbon Community - Community Funk (Deadmau5 Remix).mp3');
-  // song2 = loadSound('sounds/J. Scott G. vs. Imprintz & Kloe - Battlefunk Galactica.mp3');
-  song1 = loadSound('sounds/departure.mp3');
-  song2 = loadSound('sounds/no-exit.mp3');
+  song1 = loadSound('sounds/sober.mp3');
+  song2 = loadSound('sounds/swing.mp3');
+  // song1 = loadSound('sounds/departure.mp3');
+  // song2 = loadSound('sounds/no-exit.mp3');
 }
 
 function setup() {
@@ -40,7 +40,8 @@ function draw () {
 }
 
 function modelReady() {
-  //select('#status').html('Model Loaded');
+  // callback for when model loads
+  console.log('model loaded');
 }
 
 
@@ -60,6 +61,9 @@ function setupPoseNet () {
 }
 
 /*
+
+example return from ml5 webcam
+
 score: 0.00750491488724947
 part: "leftHip"
 position:
@@ -114,7 +118,7 @@ function initSongVolumes () {
 function createSliderUI () {
   // visual crossfade
   slider = createSlider(-100, 100, 0);
-  slider.position(10, 10);
+  slider.position(10, 610);
   slider.style('width', '80px');
 }
 
@@ -137,7 +141,7 @@ function createButtonUI () {
   song2StopButton.mousePressed(() => stopSong(2));
 }
 
-
+// function that tracks hand vertical position and adjusts volume
 function setTrackVolumes (yVal, hand) {
   let val = 0
   if (yVal != null && hand == 0) {
@@ -165,7 +169,7 @@ function setTrackVolumes (yVal, hand) {
   song2.setVolume(song2Volume);
 }
 
-
+// function that tracks x value and crossfades between two songs
 function setTrackVolumesCrossfade (xVal) {
   let val = map(xVal, 0, 500, -100, 100)
   
@@ -183,13 +187,6 @@ function setTrackVolumesCrossfade (xVal) {
   song1.setVolume(song1Volume);
   song2.setVolume(song2Volume);
 }
-
-/*
-{score: 0.0035247844643890858, part: "leftWrist", position: {…}}
-score: 0.0035247844643890858
-part: "leftWrist"
-position: {x: 329.5289563853838, y: 453.6976993200142}
-*/
 
 
 // A function to draw the skeletons
