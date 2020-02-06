@@ -18,10 +18,12 @@ let song2PlayButtton;
 let song2StopButton;
 
 function preload() {
-  song1 = loadSound('sounds/sober.mp3');
-  song2 = loadSound('sounds/swing.mp3');
+  // song1 = loadSound('sounds/Burufunk vs. Carbon Community - Community Funk (Deadmau5 Remix).mp3');
+  // song2 = loadSound('sounds/J. Scott G. vs. Imprintz & Kloe - Battlefunk Galactica.mp3');
   // song1 = loadSound('sounds/departure.mp3');
   // song2 = loadSound('sounds/no-exit.mp3');
+  song1 = loadSound('sounds/sober.mp3');
+  song2 = loadSound('sounds/swing.mp3');
 }
 
 function setup() {
@@ -186,22 +188,6 @@ function setTrackVolumesCrossfade (xVal) {
 
   song1.setVolume(song1Volume);
   song2.setVolume(song2Volume);
-}
-
-
-// A function to draw the skeletons
-function drawSkeleton() {
-  // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i++) {
-    let skeleton = poses[i].skeleton;
-    // For every skeleton, loop through all body connections
-    for (let j = 0; j < skeleton.length; j++) {
-      let partA = skeleton[j][0];
-      let partB = skeleton[j][1];
-      stroke(255, 0, 0);
-      line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
-    }
-  }
 }
 
 
